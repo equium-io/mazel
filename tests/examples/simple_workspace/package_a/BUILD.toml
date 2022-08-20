@@ -1,0 +1,5 @@
+[package]
+runtimes = ["python", "docker"]
+depends_on = [
+    "//package_b",
+]

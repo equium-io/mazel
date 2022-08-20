@@ -1,0 +1,49 @@
+[tool.poetry]
+name = "mazel"
+version = "0.0.2"
+description = "A simple bazel-inspired Makefile runner for monorepos"
+authors = ["John Paulett <john.paulett@equium.io>"]
+license = "Apache-2.0"
+repository = "https://github.com/equium-io/mazel"
+
+[tool.poetry.dependencies]
+python = "~3.10"
+tomlkit = "^0.11.0"
+click = "^8.1.3"
+# yaml only for `mazel contrib dependabot`
+"ruamel.yaml" = "^0.16.10"
+
+[tool.poetry.dev-dependencies]
+Sphinx = "^5.1.1"
+black = "^22.6.0"
+flake8 = "^5.0.4"
+isort = "^5.10.1"
+mypy = "^0.971"
+
+[tool.poetry.scripts]
+mazel = 'mazel.main:cli'
+
+[build-system]
+requires = ["poetry-core>=1.0.8"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+known_first_party = "mazel"
+float_to_top = true
+
+[tool.mypy]
+ignore_missing_imports = true
+
+# be strict
+disallow_untyped_calls = true
+warn_return_any = true
+strict_optional = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_any_generics = true
+
+# even stricter
+disallow_untyped_defs = true
+check_untyped_defs = true

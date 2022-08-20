@@ -1,0 +1,7 @@
+[tool.poetry]
+name = "package_b"
+
+[tool.poetry.dependencies]
+package_c = {path = "../nested/package_c", develop = true}
+
+[tool.poetry.dev-dependencies]

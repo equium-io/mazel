@@ -1,0 +1,23 @@
+# Python files
+__pycache__
+*.pyc
+
+# Poetry
+.venv/
+*.egg-info/
+pip-wheel-metadata/
+build/
+dist/
+
+# mypy
+.mypy_cache/
+
+# Editor files
+*\~
+*\#*
+*_flymake.*
+.vscode/
+.idea/
+
+# Misc
+.DS_Store

@@ -1,0 +1,4 @@
+# Used for testing read_toml (we don't have any required
+# schema for WORKSPACE.toml or BUILD.toml yet)
+[workspace]
+example = "foo"
