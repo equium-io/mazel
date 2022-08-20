@@ -1,10 +1,11 @@
 [tool.poetry]
 name = "mazel"
 version = "0.0.2"
-description = "A simple bazel-inspired Makefile runner for monorepos"
+description = "Simple bazel-inspired Makefile runner for monorepos"
 authors = ["John Paulett <john.paulett@equium.io>"]
 license = "Apache-2.0"
 repository = "https://github.com/equium-io/mazel"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "~3.10"
@@ -19,6 +20,8 @@ black = "^22.6.0"
 flake8 = "^5.0.4"
 isort = "^5.10.1"
 mypy = "^0.971"
+flake8-bugbear = "^22.7.1"
+flake8-fixme = "^1.1.1"
 
 [tool.poetry.scripts]
 mazel = 'mazel.main:cli'
