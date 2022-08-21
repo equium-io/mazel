@@ -11,8 +11,7 @@ readme = "README.md"
 python = "~3.10"
 tomlkit = "^0.11.0"
 click = "^8.1.3"
-# yaml only for `mazel contrib dependabot`
-"ruamel.yaml" = "^0.16.10"
+"ruamel.yaml" = { version = "^0.16.10", optional = true }
 
 [tool.poetry.dev-dependencies]
 Sphinx = "^5.1.1"
@@ -25,6 +24,10 @@ flake8-fixme = "^1.1.1"
 
 [tool.poetry.scripts]
 mazel = 'mazel.main:cli'
+
+[tool.poetry.extras]
+# yaml only for `mazel contrib dependabot`
+yaml = ["ruamel.yaml"]
 
 [build-system]
 requires = ["poetry-core>=1.0.8"]

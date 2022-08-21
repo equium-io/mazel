@@ -30,7 +30,7 @@ poetry.lock: pyproject.toml
 > touch -c poetry.lock
 
 .venv: poetry.lock poetry.toml
-> $(POETRY) install $(POETRY_INSTALL_OPTIONS)
+> $(POETRY) install --extras "yaml"
 # In case .venv existed before poetry.lock, update the target
 > touch -c .venv
 
