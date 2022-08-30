@@ -43,6 +43,7 @@ clean:
 > rm -rf .venv *.egg-info pip-wheel-metadata .mypy_cache .coverage build dist
 > find . -name "*.pyc" -type f -delete
 > find . -type d -empty -delete
+> find docs/_build ! -name .gitignore -delete
 .PHONY: init
 
 
@@ -54,13 +55,13 @@ else
 ISORT_ARGS=
 BLACK_ARGS=
 endif
-format:
+format: .venv
 > $(POETRY) run isort --virtual-env .venv $(ISORT_ARGS) .
 > $(POETRY) run black $(BLACK_ARGS) .
 .PHONY: format
 
 
-lint:
+lint: .venv
 > $(POETRY) run flake8 .
 > CHECK_ONLY=true $(MAKE) format
 # FIXME add mypy to lint (few failures make GH Actions)
@@ -68,15 +69,25 @@ lint:
 .PHONY: lint
 
 
-mypy:
+mypy: .venv
 > $(POETRY) run mypy --namespace-packages -p mazel
 .PHONY: mypy
 
 
-test:
+test: .venv
 > $(POETRY) run python -m unittest discover -t . -s tests
-.PHONY: init
+.PHONY: test
 
+
+SPHINX_BUILD_OPTIONS :=  docs docs/_build
+docs: .venv
+> $(POETRY) run sphinx-build -M html $(SPHINX_BUILD_OPTIONS)
+.PHONY: docs
+
+
+docs-serve: .venv
+> $(POETRY) run sphinx-autobuild $(SPHINX_BUILD_OPTIONS)
+.PHONY: docs
 
 
 build:
