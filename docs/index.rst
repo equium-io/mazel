@@ -1,5 +1,5 @@
 ``mazel``: make helpers for monorepos
-===================================
+=====================================
 
 > bazel(-ish) for Makefiles = **mazel**
 
