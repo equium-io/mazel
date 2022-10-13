@@ -91,7 +91,7 @@ def expand_ancestry(
     return packages
 
 
-class LabelRunner(abc.ABC):
+class LabelRunner:
     def __init__(
         self,
         handler: TargetHandler,
