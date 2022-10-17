@@ -1,12 +1,13 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from unittest import TestCase
+from unittest import TestCase, mock
 
 from mazel.exceptions import PackageNotFound
 from mazel.fs import cd
 from mazel.info import Info
 from mazel.label import Label, ResolvedLabel, Target
 from mazel.package import Package
+from mazel.types import CommitRange
 from mazel.workspace import Workspace
 
 from .utils import abspath, example_workspace
@@ -296,4 +297,44 @@ class WorkspaceReadTest(TestCase):
         expected = {"package": {"runtimes": ["python"]}}
         self.assertEqual(
             self.workspace.read_toml(Path("package_b/BUILD.toml")), expected
+        )
+
+
+class WorkspaceModifiedPackagesTest(TestCase):
+    def setUp(self):
+        self.workspace = example_workspace()
+
+        patch_git = mock.patch("mazel.workspace.git_modified_files", autospec=True)
+        self.addCleanup(patch_git.stop)
+        self.mock_git_modified = patch_git.start()
+
+    def tearDown(self):
+        del self.workspace
+
+    def run(self, result=None):
+        with cd(abspath("examples/simple_workspace/")):
+            super().run(result=result)
+
+    def test(self):
+        self.mock_git_modified.return_value = [
+            Path("package_b/BUILD.toml"),
+            Path("package_b/nested/content"),
+            Path("nested/package_c/README.md"),
+            # Not in a package, should not return
+            Path("non_package/content"),
+        ]
+
+        commits = CommitRange.parse("e8a7b791e..a74ae9803")
+        modified = self.workspace.modified_packages(commits)
+
+        expected = [
+            Package(abspath("examples/simple_workspace/package_b"), self.workspace),
+            Package(
+                abspath("examples/simple_workspace/nested/package_c"), self.workspace
+            ),
+        ]
+        self.assertCountEqual(modified, expected)
+
+        self.mock_git_modified.assert_called_once_with(
+            repo_dir=self.workspace.path, commit_range=commits
         )

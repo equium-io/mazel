@@ -1,3 +1,5 @@
+from typing import Optional
+
 import click
 
 from mazel.label import Target
@@ -16,7 +18,11 @@ from . import label_common
     help="Only show stdout/stderr after error, or stream everything.",
 )
 def test(
-    label: str, test_output: str, with_ancestors: bool, with_descendants: bool
+    label: str,
+    test_output: str,
+    with_ancestors: bool,
+    with_descendants: bool,
+    modified_since: Optional[str] = None,
 ) -> None:
     handler_cls = (
         label_common.MakeLabelCaptureErrors
@@ -30,4 +36,5 @@ def test(
         run_order=label_common.RunOrder.ORDERED,
         with_ancestors=with_ancestors,
         with_descendants=with_descendants,
+        modified_since=modified_since,
     ).run(label)

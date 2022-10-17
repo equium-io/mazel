@@ -1,3 +1,5 @@
+from typing import Optional
+
 import click
 
 from mazel.label import Target
@@ -16,7 +18,12 @@ class EchoHandler(label_common.TargetHandler):
 
 
 @label_common.label_command
-def echo(label: str, with_ancestors: bool, with_descendants: bool) -> None:
+def echo(
+    label: str,
+    with_ancestors: bool,
+    with_descendants: bool,
+    modified_since: Optional[str] = None,
+) -> None:
     """For debugging what packages would get run by run/test, echo the package:target"""
     handler_cls = EchoHandler
 
@@ -26,4 +33,5 @@ def echo(label: str, with_ancestors: bool, with_descendants: bool) -> None:
         run_order=label_common.RunOrder.ORDERED,
         with_ancestors=with_ancestors,
         with_descendants=with_descendants,
+        modified_since=modified_since,
     ).run(label)
