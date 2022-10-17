@@ -13,6 +13,7 @@ import click
 from mazel.graph import Node, PackageGraph
 from mazel.label import Label, Target
 from mazel.package import Package
+from mazel.types import CommitRange
 from mazel.workspace import Workspace
 
 from .utils import current_workspace
@@ -26,6 +27,15 @@ def label_command(fn: Callable[..., None]) -> click.Command:
     fn = click.argument("label", required=False)(fn)
     fn = click.option("--with-ancestors", is_flag=True, default=False)(fn)
     fn = click.option("--with-descendants", is_flag=True, default=False)(fn)
+    fn = click.option(
+        "--modified-since",
+        default=None,
+        help=(
+            "Only run for packages with modified files according to git. Takes in a "
+            "commit like object, e.g. 39fc076 or a range 39fc076..6ff72ca. End commit "
+            "defaults to HEAD"
+        ),
+    )(fn)
     return fn
 
 
@@ -99,12 +109,17 @@ class LabelRunner:
         run_order: RunOrder = RunOrder.UNORDERED,
         with_ancestors: bool = False,
         with_descendants: bool = False,
+        modified_since: Optional[str] = None,
     ):
         self.handler = handler
         self.default_target = default_target
         self.run_order = run_order
         self.with_ancestors = with_ancestors
         self.with_descendants = with_descendants
+
+        self.modified_range = (
+            CommitRange.parse(modified_since) if modified_since else None
+        )
 
         self.workspace = current_workspace()
 
@@ -119,6 +134,12 @@ class LabelRunner:
 
     def process_packages(self, packages: List[Package], target: Target) -> None:
         errors = []
+
+        if self.modified_range is not None:
+            modified_packages = self.workspace.modified_packages(
+                commit_range=self.modified_range
+            )
+            packages = [pkg for pkg in packages if pkg in modified_packages]
 
         for pkg in package_order(
             packages=packages,

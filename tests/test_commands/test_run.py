@@ -17,6 +17,7 @@ class RunCommandTest(LabelCommandTestCase):
             run_order=RunOrder.ORDERED,
             with_ancestors=False,
             with_descendants=False,
+            modified_since=None,
         )
         self.assertIsInstance(
             self.mock_runner.call_args_list[0][1]["handler"], MakeLabelPassInterrupt

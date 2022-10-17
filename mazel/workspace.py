@@ -6,10 +6,12 @@ from typing import Callable, List, Optional, Union, overload
 
 from .base import PathableConcept
 from .exceptions import PackageNotFound
+from .git import git_modified_files
 from .graph import PackageGraph
 from .info import Info
 from .label import Label, ResolvedLabel, Target
 from .package import Package
+from .types import CommitRange
 
 
 def package_scan(workspace: Workspace, path: Path) -> List[Package]:
@@ -179,3 +181,37 @@ class Workspace(PathableConcept):
         target = Target(label.target_name) if label.target_name else None
 
         return ResolvedLabel(matched_packages, target)
+
+    def modified_files(self, commit_range: CommitRange) -> list[Path]:
+        """
+        What files were modified between git commits.
+
+        Typically prefer Workspace.modified_packages()
+
+        `commit_to` defaults to HEAD.
+        """
+        modified = git_modified_files(repo_dir=self.path, commit_range=commit_range)
+        return [self.path / path for path in modified]
+
+    def modified_packages(self, commit_range: CommitRange) -> list[Package]:
+        """
+        What packages have modified files between git commits.
+
+        `commit_to` defaults to HEAD.
+        """
+        modified_files = self.modified_files(commit_range=commit_range)
+
+        # All the paths from `git diff --name-only` should be files, so get the unique
+        # set of directories to compare against the packages' directories
+        modified_dirs = sorted(list(set([path.parent for path in modified_files])))
+
+        # Naive O(N^2) algorithm, lot's of options to improve
+        modified_packages = []
+        for path in modified_dirs:
+            # Include this path, since we've already done .parent to uniquify the list
+            parents = list(path.parents) + [path]
+            for package in self.packages():
+                if package.path in parents and package not in modified_packages:
+                    modified_packages.append(package)
+
+        return modified_packages

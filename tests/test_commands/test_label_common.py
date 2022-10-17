@@ -2,6 +2,7 @@ import signal
 import subprocess
 from contextlib import ExitStack
 from datetime import datetime
+from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import TestCase
 from unittest.mock import call, create_autospec, patch
@@ -147,6 +148,25 @@ class LabelRunnerTest(CommandTestCase):
                 call(self.package_b, Target("trgt")),
                 call(self.package_a, Target("trgt")),
             ]
+        )
+
+    def test_modified_range(self):
+        with patch("mazel.workspace.git_modified_files", autospec=True) as mock_git:
+            mock_git.return_value = [
+                Path("package_b/nested/content"),
+                Path("nested/package_c/README.md"),
+            ]
+
+            LabelRunner(
+                self.handler, "fallback", RunOrder.ORDERED, modified_since="90daff2"
+            ).run("//:trgt")
+
+        self.handler.handle.assert_has_calls(
+            [
+                call(self.package_b, Target("trgt")),
+                call(self.package_c, Target("trgt")),
+            ],
+            any_order=True,
         )
 
 

@@ -18,6 +18,7 @@ class EchoCommandTest(LabelCommandTestCase):
             run_order=RunOrder.ORDERED,
             with_ancestors=False,
             with_descendants=False,
+            modified_since=None,
         )
 
         self.assertEqual(result.exit_code, 0)
