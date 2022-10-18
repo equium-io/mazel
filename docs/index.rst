@@ -11,7 +11,7 @@ mazel provides:
 
 1. Ability to execute make targets in one more :ref:`Packages <concepts-package>` via a :ref:`Label syntax <concepts-label>`
 2. Dependency graph to allow execution of targets in a logical order. Either explicitly specificied or automatically parsed from :doc:`Supported Runtime <runtimes>` including poetry and npm.
-
+3. Ability to only run for a subset of modified packages according the the dependency graph. :ref:`Selective Builds <selective-builds>`
 
 
 Run the ``clean`` target in all packages in a monorepo (``//`` indicates :ref:`Workspace <concepts-workspace>` root)::
@@ -28,6 +28,10 @@ Run the ``clean`` target in all packages in a monorepo (``//`` indicates :ref:`W
    mazel test //
 
 
+With :ref:`Selective Builds <selective-builds>`, only modified packages (and optionally downstream packages) can be run::
+
+  mazel test --modified-since=abcd1234 --with-descendants //
+
 
 .. toctree::
    :maxdepth: 2
@@ -40,3 +44,4 @@ Run the ``clean`` target in all packages in a monorepo (``//`` indicates :ref:`W
    runtimes
    make/index
    contribute
+   changelog

@@ -20,7 +20,11 @@
    Options:
      --with-ancestors
      --with-descendants
-     --help              Show this message and exit.
+     --modified-since TEXT  Only run for packages with modified files according
+                            to git. Takes in a commit like object, e.g. 39fc076
+                            or a range 39fc076..6ff72ca. End commit defaults to
+                            HEAD
+     --help                 Show this message and exit.
 
 .. _commands-test:
 
@@ -37,7 +41,28 @@
                                      stream everything.
      --with-ancestors
      --with-descendants
+     --modified-since TEXT           Only run for packages with modified files
+                                     according to git. Takes in a commit like
+                                     object, e.g. 39fc076 or a range
+                                     39fc076..6ff72ca. End commit defaults to
+                                     HEAD
      --help                          Show this message and exit.
+
+
+.. _selective-builds:
+
+Selective Builds for Modified Packages
+--------------------------------------
+
+Using the ``--modified-since=<COMMIT>`` option, we can run only packages that contain files that have been added/removed/changed since the ``COMMIT``.  Typically ``COMMIT`` will be the last succesful CI run or the branch point off the ``main`` branch. When we also add  ``--with-descendants``, we can also run with any packages that depend upon our changed package(s).
+
+So if :file:`//libs/py/common/libcommon.py` changed, and :file:`//services/backend` uses :file:`//libs/py/common`::
+
+  # Would run the test target on //libs/py/common
+  mazel test --modified-since=abcd1234 //
+
+  # Would run the test target on //libs/py/common and //services/backend
+  mazel test --modified-since=abcd1234 --with-descendants //
 
 Suggested zsh / bash Aliases
 ----------------------------
