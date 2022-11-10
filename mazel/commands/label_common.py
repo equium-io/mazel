@@ -73,7 +73,7 @@ def expand_ancestry(
 ) -> List[Package]:
     packages: List[Package] = []
 
-    def recurse(node: Node) -> None:
+    def recurse(node: Node, walking_ancestors: bool = False) -> None:
         # This node has already been processed, don't need to readd it or
         # its parents/chilren
         if node.package in packages:
@@ -84,10 +84,13 @@ def expand_ancestry(
         if with_ancestors:
             # Add parents and recursive to grandparents until exhausted
             for parent in node.parents:
-                recurse(parent)
+                recurse(parent, walking_ancestors=True)
 
-        if with_descendants:
-            # Add children and recursive to grandchildren until exhausted
+        if with_descendants and not walking_ancestors:
+            # Add children and recursive to grandchildren until exhausted,
+            # but do not recurse to nodes that are not direct descendants of the
+            # start node (e.g. siblings or "cousins" of the start node)
+            # related, but n
             for child in node.children:
                 recurse(child)
 
