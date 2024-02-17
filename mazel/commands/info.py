@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 import click
 
@@ -8,7 +8,7 @@ from .utils import current_workspace
 @click.command()
 @click.argument("fact", required=False)
 # @click.option("--cwd", default=None, help="", type=click.Path(file_okay=False))
-def info(fact: str = None) -> None:
+def info(fact: Optional[str] = None) -> None:
     """Facts about the Workspace. Can request a specific FACT or receive all."""
 
     # cwd=Path(cwd) if cwd else None

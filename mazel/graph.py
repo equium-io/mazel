@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Iterable, List, Set
+from typing import Any, Callable, Dict, Iterable, List, Optional, Set
 
 from .package import Package
 
@@ -39,8 +39,8 @@ class Node(object):
     def __init__(
         self,
         package: Package,
-        parents: List["Node"] = None,
-        children: List["Node"] = None,
+        parents: Optional[List["Node"]] = None,
+        children: Optional[List["Node"]] = None,
     ):
         self.package = package
         self.parents: List["Node"] = parents or []

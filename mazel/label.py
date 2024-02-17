@@ -42,13 +42,13 @@ class Label(object):
             else:
                 # Lacking a path specifier, assume the single component
                 # refers to the target_name
-                package_path, target_name = None, item  # type: ignore
+                package_path, target_name = None, item
         else:
             # TODO Consider handling error of > 2 parts
             package_path, target_name = components[0:2]
 
         # Turn empty strings from .split() into None
-        package_path = package_path or None  # type: ignore
+        package_path = package_path or None
         target_name = target_name or None
 
         return cls(package_path, target_name)

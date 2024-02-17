@@ -12,7 +12,7 @@ from mazel.contrib.link_readme import link_readme
 
 
 @click.group()
-def contrib() -> click.Group:
+def contrib() -> None:
     pass
 
 

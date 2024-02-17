@@ -61,14 +61,20 @@ def package_scan(workspace: Workspace, path: Path) -> List[Package]:
 
 @overload
 def locate_upwards(
-    locate: str, fn: Callable[[Path], Package], stopdir: Path = None, cwd: Path = None
+    locate: str,
+    fn: Callable[[Path], Package],
+    stopdir: Optional[Path] = None,
+    cwd: Optional[Path] = None,
 ) -> Optional[Package]:
     ...
 
 
 @overload
 def locate_upwards(
-    locate: str, fn: Callable[[Path], Workspace], stopdir: Path = None, cwd: Path = None
+    locate: str,
+    fn: Callable[[Path], Workspace],
+    stopdir: Optional[Path] = None,
+    cwd: Optional[Path] = None,
 ) -> Optional[Workspace]:
     ...
 
@@ -76,8 +82,8 @@ def locate_upwards(
 def locate_upwards(
     locate: str,
     fn: Callable[[Path], Union[Package, Workspace]],
-    stopdir: Path = None,
-    cwd: Path = None,
+    stopdir: Optional[Path] = None,
+    cwd: Optional[Path] = None,
 ) -> Union[None, Package, Workspace]:
     """
     Walk up the directory tree, trying to find the `locate` file's directory.
@@ -105,14 +111,14 @@ class Workspace(PathableConcept):
     WORKSPACE_TOML = "WORKSPACE.toml"
 
     @classmethod
-    def find(cls, cwd: Path = None) -> Optional[Workspace]:
+    def find(cls, cwd: Optional[Path] = None) -> Optional[Workspace]:
         """
         Walk up the directory tree, trying to find the WORKSPACE file,
         which indicates the workspace path
         """
         return locate_upwards(locate=cls.WORKSPACE_TOML, fn=cls, cwd=cwd)
 
-    def active_package(self, cwd: Path = None) -> Optional[Package]:
+    def active_package(self, cwd: Optional[Path] = None) -> Optional[Package]:
         """Current working directory's Package"""
         return locate_upwards(
             locate=Package.BUILD_TOML,
@@ -155,7 +161,7 @@ class Workspace(PathableConcept):
         # TODO pass in active_package and resolve relative paths
         return self.get_package(self._abspath(package_path))
 
-    def resolve_label(self, label: Label, cwd: Path = None) -> ResolvedLabel:
+    def resolve_label(self, label: Label, cwd: Optional[Path] = None) -> ResolvedLabel:
         """Resolves the Label to one or more Packages, with a Target"""
         active = self.active_package(cwd=cwd)
         matched_packages: List[Package] = []

@@ -10,7 +10,7 @@ from .commands.test import test
 
 
 @click.group()
-def cli() -> click.Group:
+def cli() -> None:
     pass
 
 
