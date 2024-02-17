@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.0.5 - 2024-02-16
+0.0.5 - 2024-02-17
 ------------------
 
 - Open Python version specificer to allow Python 3.11+
